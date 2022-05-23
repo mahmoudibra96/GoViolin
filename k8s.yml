@@ -1,0 +1,43 @@
+# creating a deplotment and service so we can deploy and access our app 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goviolinapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: goviolinapp
+  template:
+    metadata:
+      labels:
+        app: goviolinapp
+    spec:
+      containers:
+      - name: goviolinapp
+        image: mahmoudibrahem125/goviolin:latest
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: goviolinapp
+spec:
+  selector:
+    app: goviolinapp
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 31114
+  type: NodePort
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  internalTrafficPolicy: Cluster
+status:
+  loadBalancer: {}
+
+
